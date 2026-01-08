@@ -20,6 +20,15 @@ class DatabaseSeeder extends Seeder
         User::factory()->create([
             'name' => 'Test User',
             'email' => 'test@example.com',
+            'level' => 'user',
+        ]);
+
+        // Tambah user admin dengan password
+        User::create([
+            'name' => 'Admin',
+            'email' => 'admin@gmail.com',
+            'level' => 'admin',
+            'password' => bcrypt('password'), // atau Hash::make('password')
         ]);
     }
 }
