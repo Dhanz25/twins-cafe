@@ -9,6 +9,8 @@
   <meta name="keywords" content="" />
   <meta name="description" content="" />
   <meta name="author" content="" />
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+
 
   <title> Twins Caffe </title>
 
@@ -25,6 +27,29 @@
   <link href="{{ asset('feane-1.0.0/css/style.css') }}" rel="stylesheet" />
   <!-- responsive style -->
   <link href="{{ asset('feane-1.0.0/css/responsive.css') }}" rel="stylesheet" />
+
+  <style>
+    /* Search box styling to match input shape and be responsive */
+    .menu-search { max-width: 520px; margin: 0 auto; }
+    .menu-search .form-control {
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+      box-shadow: none;
+    }
+    .menu-search .input-group-append .btn {
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+      border-left: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .menu-search .input-group-append .btn i { font-size: 1.05rem; }
+    @media (max-width: 576px) {
+      .menu-search { max-width: 100%; }
+      .menu-search .form-control, .menu-search .input-group-append .btn { height: 44px; }
+    }
+  </style>
 
 </head>
 
@@ -245,9 +270,25 @@ Lebih dari sekadar tempat ngopi, Twins Coffee adalah ruang berkumpul, berbagi ce
   <section class="food_section layout_padding-bottom">
     <div class="container">
       <div class="heading_container heading_center">
-        <h2>
+        <h2 class="mb-4">
           Our Menu
         </h2>
+        <form onsubmit="event.preventDefault(); searchMenu();">
+          <div class="input-group menu-search">
+            <input
+              type="search"
+              class="form-control"
+              id="searchMenu"
+              placeholder="Cari menu..."
+              aria-label="Cari menu"
+            />
+            <div class="input-group-append">
+              <button class="btn btn-outline-secondary" type="button" id="searchBtn" onclick="searchMenu()">
+                <i class="fa fa-search"></i>
+              </button>
+            </div>
+          </div>
+        </form>
       </div>
 
       <ul class="filters_menu">
@@ -261,9 +302,10 @@ Lebih dari sekadar tempat ngopi, Twins Coffee adalah ruang berkumpul, berbagi ce
 
       <div class="filters-content">
         <div class="row grid">
+        @if(isset($produks))
         @foreach ($produks as $produk)
-        <div class="col-sm-6 col-lg-4 all {{ Str::slug(optional($produk->kategori)->nama_kategori) }}" {{ $loop->index > 8 ? 'is-hidden' : '' }}"
-    data-index="{{ $loop->index }}">
+        <div class="col-sm-6 col-lg-4 all {{ Str::slug(optional($produk->kategori)->nama_kategori) }} {{ $loop->index > 8 ? 'is-hidden' : '' }}"
+            data-index="{{ $loop->index }}">
             <div class="box">
 
                 <div class="img-box">
@@ -286,7 +328,13 @@ Lebih dari sekadar tempat ngopi, Twins Coffee adalah ruang berkumpul, berbagi ce
                             Rp {{ number_format($produk->harga, 0, ',', '.') }}
                         </h6>
 
-                        <a href="#">
+                        <a href="javascript:void(0)"
+                                onclick="addToCart(
+                                    {{ $produk->id }},
+                                    '{{ $produk->nama_produk }}',
+                                    {{ $produk->harga }}
+                                )">
+
                             <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 456.029 456.029" style="enable-background:new 0 0 456.029 456.029;" xml:space="preserve">
                         <g>
                           <g>
@@ -317,6 +365,8 @@ Lebih dari sekadar tempat ngopi, Twins Coffee adalah ruang berkumpul, berbagi ce
             </div>
         </div>
         @endforeach
+        @endif
+
 
           {{-- <div class="col-sm-6 col-lg-4 all burger">
             <div class="box">
@@ -980,6 +1030,31 @@ Lebih dari sekadar tempat ngopi, Twins Coffee adalah ruang berkumpul, berbagi ce
   });
 });
   </script>
+<script>
+function addToCart(id, name, price) {
+    fetch('/cart/add', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document
+              .querySelector('meta[name="csrf-token"]').content
+        },
+        body: JSON.stringify({
+            id: id,
+            name: name,
+            price: price
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        alert('Produk ditambahkan ke keranjang 🛒');
+        if (document.getElementById('cart-count')) {
+            document.getElementById('cart-count').innerText = data.count;
+        }
+    })
+    .catch(err => console.error(err));
+}
+    </script>
 
 </body>
 

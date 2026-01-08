@@ -29,8 +29,6 @@
               <a href="" class="user_link">
                 <i class="fa fa-user" aria-hidden="true"></i>
               </a>
-              <a class="cart_link" href="#">
-                <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 456.029 456.029" style="enable-background:new 0 0 456.029 456.029;" xml:space="preserve">
                   <g>
                     <g>
                       <path d="M345.6,338.862c-29.184,0-53.248,23.552-53.248,53.248c0,29.184,23.552,53.248,53.248,53.248
@@ -53,14 +51,30 @@
                   </g>
                 </svg>
               </a>
-              <form class="form-inline">
+              {{-- <form class="form-inline">
                 <button class="btn  my-2 my-sm-0 nav_search-btn" type="submit">
                   <i class="fa fa-search" aria-hidden="true"></i>
                 </button>
-              </form>
-              <a href="" class="order_online">
-                Order
-              </a>
+              </form> --}}
+              <a class="cart_link" href="/cart" style="position: relative;">
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cart2" viewBox="0 0 16 16">
+  <path d="M0 2.5A.5.5 0 0 1 .5 2H2a.5.5 0 0 1 .485.379L2.89 4H14.5a.5.5 0 0 1 .485.621l-1.5 6A.5.5 0 0 1 13 11H4a.5.5 0 0 1-.485-.379L1.61 3H.5a.5.5 0 0 1-.5-.5M3.14 5l1.25 5h8.22l1.25-5zM5 13a1 1 0 1 0 0 2 1 1 0 0 0 0-2m-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0m9-1a1 1 0 1 0 0 2 1 1 0 0 0 0-2m-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0"/>
+</svg>
+
+  <span id="cart-count"
+        style="
+          position:absolute;
+          top:-5px;
+          right:-10px;
+          background:red;
+          color:white;
+          font-size:12px;
+          padding:2px 6px;
+          border-radius:50%;
+        ">
+    {{ collect(session('cart', []))->sum('qty') }}
+  </span>
+</a>
             </div>
           </div>
       </div>

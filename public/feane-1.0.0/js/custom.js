@@ -9,6 +9,7 @@ getYear();
 
 
 // isotope js
+var $grid;
 $(window).on('load', function () {
     $('.filters_menu li').click(function () {
         $('.filters_menu li').removeClass('active');
@@ -20,7 +21,7 @@ $(window).on('load', function () {
         })
     });
 
-    var $grid = $(".grid").isotope({
+    $grid = $(".grid").isotope({
         itemSelector: ".all",
         percentPosition: false,
         masonry: {
@@ -150,3 +151,133 @@ document.addEventListener("DOMContentLoaded", function () {
          }
      });
  });
+
+
+ // =====================
+// CART FUNCTION (LARAVEL)
+// =====================
+
+function addToCart(id, name, price) {
+    fetch('/cart/add', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document
+                .querySelector('meta[name="csrf-token"]').content
+        },
+        body: JSON.stringify({
+            id: id,
+            name: name,
+            price: price
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        const cartCount = document.getElementById('cart-count');
+        if (cartCount) {
+            cartCount.innerText = data.count;
+        }
+    })
+    .catch(err => console.error('Cart error:', err));
+}
+
+function openCart() {
+    fetch("/cart/data")
+        .then(res => res.json())
+        .then(cart => {
+            let html = "";
+            let total = 0;
+
+            if (Object.keys(cart).length === 0) {
+                html = "<p>Keranjang kosong</p>";
+            } else {
+                Object.values(cart).forEach(item => {
+                    let sub = item.price * item.qty;
+                    total += sub;
+
+                    html += `
+                        <div class="d-flex justify-content-between mb-2">
+                            <div>${item.name} x ${item.qty}</div>
+                            <div>Rp ${sub.toLocaleString()}</div>
+                        </div>
+                    `;
+                });
+
+                html += `<hr><h5>Total: Rp ${total.toLocaleString()}</h5>`;
+            }
+
+            document.getElementById("cartContent").innerHTML = html;
+
+            new bootstrap.Modal(document.getElementById("cartModal")).show();
+        });
+}
+
+function showNoResults(show) {
+    var container = document.querySelector('.filters-content');
+    if (!container) return;
+    var noEl = document.getElementById('no-results');
+    if (!noEl) {
+        noEl = document.createElement('p');
+        noEl.id = 'no-results';
+        noEl.className = 'text-center mt-4';
+        container.appendChild(noEl);
+    }
+    noEl.innerText = show ? 'Tidak ada menu ditemukan.' : '';
+    noEl.style.display = show ? '' : 'none';
+}
+
+function debounce(fn, delay) {
+    var timer;
+    return function() {
+        var context = this; var args = arguments;
+        clearTimeout(timer);
+        timer = setTimeout(function() { fn.apply(context, args); }, delay);
+    };
+}
+
+function searchMenu() {
+    var q = (document.getElementById('searchMenu') || { value: '' }).value.trim().toLowerCase();
+
+    if (window.$ && typeof $.fn.isotope === 'function' && $grid) {
+        if (!q) {
+            $grid.isotope({ filter: '*' });
+            showNoResults(false);
+            return;
+        }
+
+        $grid.isotope({
+            filter: function() {
+                var title = $(this).find('.detail-box h5').text().toLowerCase();
+                return title.indexOf(q) !== -1;
+            }
+        });
+
+        // give isotope a moment to update filteredItems
+        setTimeout(function() {
+            var iso = $grid.data('isotope');
+            var count = iso && iso.filteredItems ? iso.filteredItems.length : 0;
+            showNoResults(count === 0);
+        }, 50);
+
+        return;
+    }
+
+    // fallback when isotope not available
+    var items = document.querySelectorAll('.filters-content .grid .all');
+    var found = false;
+    items.forEach(function(item) {
+        var titleEl = item.querySelector('.detail-box h5');
+        var title = titleEl ? titleEl.textContent.trim().toLowerCase() : '';
+        var visible = !q || title.indexOf(q) !== -1;
+        item.style.display = visible ? '' : 'none';
+        if (visible) found = true;
+    });
+    showNoResults(!found);
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    var input = document.getElementById('searchMenu');
+    var btn = document.getElementById('searchBtn');
+    if (input) input.addEventListener('input', debounce(searchMenu, 250));
+    if (btn) btn.addEventListener('click', searchMenu);
+});

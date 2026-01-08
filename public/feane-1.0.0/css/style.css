@@ -1025,4 +1025,114 @@ html {
 .footer_section .footer-info p a {
   color: inherit;
 }
-/*# sourceMappingURL=style.css.map */
+
+/* CART CUSTOM */
+.cart-item {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.cart-total {
+    background: #3e2723;
+    color: #fff;
+    border-radius: 10px;
+}
+
+.cart-total h4 {
+    color: #ffbe33;
+}
+
+.cart-total hr {
+    border-color: rgba(255,255,255,0.2);
+}
+
+.qty-box {
+    background: #f8f9fa;
+    padding: 8px 15px;
+    border-radius: 8px;
+}
+/* ===============================
+   CART BACKGROUND (COFFEE THEME)
+   =============================== */
+
+.cart-bg {
+    background: linear-gradient(
+        135deg,
+        #f5efe6 0%,
+        #e6d5c3 100%
+    );
+    min-height: 100vh;
+}
+
+/* section cart */
+.food_section {
+    background: transparent;
+}
+
+/* CARD ITEM */
+.cart-item {
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 10px 30px rgba(62,39,35,0.15);
+    border-left: 6px solid #8d5a3b;
+}
+
+/* TOTAL CARD */
+.cart-total {
+    background: linear-gradient(
+        160deg,
+        #3e2723,
+        #5d4037
+    );
+    color: #fff;
+    border-radius: 16px;
+    box-shadow: 0 12px 30px rgba(62,39,35,0.4);
+}
+
+.cart-total h4 {
+    color: #ffbe33;
+    font-weight: 700;
+}
+
+/* BREADCRUMB */
+.heading_container p {
+    color: #6d4c41;
+}
+
+/* BUTTON */
+.cart-total .btn-warning {
+    background: #ffbe33;
+    border: none;
+    font-weight: 600;
+}
+
+.cart-total .btn-warning:hover {
+    background: #e0a800;
+}
+
+/* EMPTY CART */
+.cart-bg .text-center p {
+    color: #5d4037;
+}
+.menu-search {
+  display: flex;
+  justify-content: center;
+  margin: 16px 0 24px;
+}
+
+.menu-search input {
+  width: 320px;
+  max-width: 90%;
+  padding: 12px 16px;
+  border-radius: 999px;
+  border: 3px solid #ddd;
+  font-size: 14px;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.menu-search input:focus {
+  border-color: #f5b942;
+  box-shadow: 0 0 0 2px rgba(245, 185, 66, 0.2);
+}
