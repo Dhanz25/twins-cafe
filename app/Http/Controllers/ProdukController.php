@@ -17,7 +17,7 @@ class ProdukController extends Controller
         $kategoris = Kategori::all();
 
         return view('layouts.home', compact('produks', 'kategoris'));
-    }
+    } 
 
     /**
      * Show the form for creating a new resource.

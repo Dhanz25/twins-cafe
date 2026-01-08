@@ -5,7 +5,7 @@ use App\Http\Controllers\CartController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('layouts.home');
+    return view('layouts.login');
 });
 Route::get('/', [ProdukController::class, 'index']);
 
