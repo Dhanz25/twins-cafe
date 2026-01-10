@@ -305,7 +305,11 @@ Lebih dari sekadar tempat ngopi, Twins Coffee adalah ruang berkumpul, berbagi ce
         @if(isset($produks))
         @foreach ($produks as $produk)
         <div class="col-sm-6 col-lg-4 all {{ Str::slug(optional($produk->kategori)->nama_kategori) }} {{ $loop->index > 8 ? 'is-hidden' : '' }}"
-            data-index="{{ $loop->index }}">
+          data-index="{{ $loop->index }}"
+          data-id="{{ $produk->getKey() }}"
+          data-name="{{ $produk->nama_produk }}"
+          data-price="{{ $produk->harga }}"
+          data-image="{{ asset('images/' . $produk->image) }}">
             <div class="box">
 
                 <div class="img-box">
@@ -328,12 +332,12 @@ Lebih dari sekadar tempat ngopi, Twins Coffee adalah ruang berkumpul, berbagi ce
                             Rp {{ number_format($produk->harga, 0, ',', '.') }}
                         </h6>
 
-                        <a href="javascript:void(0)"
-                                onclick="addToCart(
-                                    {{ $produk->id }},
-                                    '{{ $produk->nama_produk }}',
-                                    {{ $produk->harga }}
-                                )">
+                        <a href="javascript:void(0)" data-open-modal="true" class="open-cart"
+                            onclick="addToCart(
+                              {{ $produk->id }},
+                              '{{ $produk->nama_produk }}',
+                              {{ $produk->harga }}
+                            )">
 
                             <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 456.029 456.029" style="enable-background:new 0 0 456.029 456.029;" xml:space="preserve">
                         <g>
@@ -1032,29 +1036,206 @@ Lebih dari sekadar tempat ngopi, Twins Coffee adalah ruang berkumpul, berbagi ce
   </script>
 <script>
 function addToCart(id, name, price) {
-    fetch('/cart/add', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': document
-              .querySelector('meta[name="csrf-token"]').content
-        },
-        body: JSON.stringify({
-            id: id,
-            name: name,
-            price: price
-        })
-    })
-    .then(res => res.json())
-    .then(data => {
-        alert('Produk ditambahkan ke keranjang 🛒');
-        if (document.getElementById('cart-count')) {
-            document.getElementById('cart-count').innerText = data.count;
-        }
-    })
-    .catch(err => console.error(err));
+  var payload = { product_id: Number(id), quantity: 1 };
+  console.log('Quick addToCart called', payload);
+  fetch('/cart/add', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRF-TOKEN': document
+        .querySelector('meta[name="csrf-token"]').content
+    },
+    body: JSON.stringify(payload)
+  })
+  .then(res => res.json())
+  .then(data => {
+    console.log('Server response (quick add):', data);
+    alert('Produk ditambahkan ke keranjang 🛒');
+    if (document.getElementById('cart-count')) {
+      document.getElementById('cart-count').innerText = data.count;
+    }
+  })
+  .catch(err => console.error(err));
 }
     </script>
+
+  <!-- Product modal (Bootstrap-5 style) -->
+  <div id="productModal" class="modal fade" tabindex="-1" aria-hidden="true" style="display:none;">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="productModalLabel">Produk</h5>
+          <!-- Use an explicit close icon to ensure it's visible on all themes -->
+          <button type="button" class="btn-close custom-btn-close" aria-label="Close" id="modalCloseBtn">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="row gx-3">
+            <div class="col-5">
+              <div class="ratio ratio-1x1">
+                <img id="modalProductImage" src="" alt="produk" class="img-fluid rounded" style="object-fit:cover;" />
+              </div>
+            </div>
+            <div class="col-7">
+              <h5 id="modalProductName" class="mb-1"></h5>
+              <p id="modalProductPrice" class="fw-semibold text-muted mb-3"></p>
+
+              <div class="d-flex align-items-center mb-2">
+                <div class="me-2">Jumlah</div>
+                <div class="d-flex align-items-center">
+                  <button type="button" class="btn btn-outline-secondary" id="qtyMinus">-</button>
+                  <input type="number" id="modalQty" class="form-control text-center mx-2" value="1" min="1" style="width:80px;" />
+                  <button type="button" class="btn btn-outline-secondary" id="qtyPlus">+</button>
+                </div>
+              </div>
+
+              <div class="mt-2">
+                <div class="text-muted">Total</div>
+                <div id="modalTotalPrice" class="h5 fw-bold">Rp 0</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="modalCancel">Batal</button>
+          <button type="button" class="btn btn-warning" id="modalAddBtn">Tambah ke Keranjang</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    /* Minimal modal-show styles (works without relying on Bootstrap JS) */
+    .modal { transition: opacity .15s linear; }
+    .modal.show { display: block; opacity: 1; }
+    .modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 1040; pointer-events: auto; }
+    #productModal { z-index: 1050; pointer-events: auto; }
+    /* Ensure the close button shows a clear × and is positioned top-right */
+    .custom-btn-close { font-size: 1.25rem; line-height: 1; color: #000; background: transparent; border: 0; padding: 6px 10px; cursor: pointer; }
+    .custom-btn-close:focus { outline: none; box-shadow: none; }
+    .modal-header { position: relative; }
+    .custom-btn-close { position: absolute; right: 0.5rem; top: 0.5rem; }
+  </style>
+
+  <script>
+    (function(){
+      function formatPrice(p){
+        try { return 'Rp ' + Number(p).toLocaleString('id-ID'); } catch(e){ return p; }
+      }
+
+      function openModalForCard(card){
+        var id = card.getAttribute('data-id');
+        console.log('OPEN MODAL WITH ID:', id);
+        var name = card.getAttribute('data-name');
+        var price = card.getAttribute('data-price');
+        var image = card.getAttribute('data-image');
+        var modal = document.getElementById('productModal');
+        document.getElementById('productModalLabel').innerText = name;
+        document.getElementById('modalProductName').innerText = name;
+        document.getElementById('modalProductPrice').innerText = 'Harga: ' + formatPrice(price);
+        document.getElementById('modalQty').value = 1;
+        document.getElementById('modalProductImage').src = image || '';
+        modal.dataset.id = id;
+        modal.dataset.name = name;
+        modal.dataset.price = price;
+        // update total
+        updateModalTotal();
+        // show modal + backdrop
+        modal.classList.add('show');
+        modal.style.display = 'block';
+        var backdrop = document.createElement('div');
+        backdrop.className = 'modal-backdrop fade show';
+        backdrop.id = 'modalBackdrop';
+        document.body.appendChild(backdrop);
+        document.body.classList.add('modal-open');
+      }
+
+      function closeModal(){
+        var modal = document.getElementById('productModal');
+        modal.classList.remove('show');
+        modal.style.display = 'none';
+        var bd = document.getElementById('modalBackdrop'); if(bd) bd.remove();
+        document.body.classList.remove('modal-open');
+      }
+
+      // capture clicks on anchors that have data-open-modal to intercept inline onclick
+      document.addEventListener('click', function(e){
+        var a = e.target.closest('a[data-open-modal]');
+        if(!a) return;
+        // intercept and open modal instead of running the inline onclick
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        var card = a.closest('[data-id]');
+        if(!card) return;
+        openModalForCard(card);
+      }, true); // use capture to run before inline handlers
+
+      // qty buttons with instant total update
+      function updateModalTotal(){
+        var modal = document.getElementById('productModal');
+        var price = parseFloat(modal.dataset.price || 0) || 0;
+        var qtyEl = document.getElementById('modalQty');
+        var qty = Math.max(1, parseInt(qtyEl.value || 1));
+        qtyEl.value = qty;
+        var total = price * qty;
+        document.getElementById('modalTotalPrice').innerText = 'Total: ' + formatPrice(total);
+      }
+
+      document.addEventListener('click', function(e){
+        if(e.target.id === 'qtyPlus'){
+          var q = document.getElementById('modalQty'); q.value = parseInt(q.value||1) + 1; updateModalTotal();
+        }
+        if(e.target.id === 'qtyMinus'){
+          var q = document.getElementById('modalQty'); q.value = Math.max(1, parseInt(q.value||1) - 1); updateModalTotal();
+        }
+      });
+
+      // also update when user types a number
+      document.getElementById('modalQty').addEventListener('input', function(){
+        if(!this.value || parseInt(this.value) < 1) this.value = 1;
+        updateModalTotal();
+      });
+
+      // modal controls
+      document.getElementById('modalCloseBtn').addEventListener('click', closeModal);
+      document.getElementById('modalCancel').addEventListener('click', closeModal);
+      document.body.addEventListener('click', function(e){ if(e.target && e.target.id === 'modalBackdrop'){ closeModal(); } });
+
+      // Add to cart from modal (includes qty)
+      // Use delegated click handler so it works even if modal DOM is re-rendered
+      document.addEventListener('click', function(e){
+        var btn = e.target.closest('#modalAddBtn');
+        if(!btn) return;
+        e.preventDefault();
+        e.stopPropagation();
+        console.log('MODAL ADD BUTTON CLICKED');
+        var modal = document.getElementById('productModal');
+        if(!modal){ console.error('Modal element not found'); return; }
+        var id = modal.dataset.id;
+        var qtyEl = document.getElementById('modalQty');
+        var qty = qtyEl ? Math.max(1, parseInt(qtyEl.value || 1)) : 1;
+        if(!id){ console.error('No product id found on modal'); return; }
+        var payload = { product_id: Number(id), quantity: qty };
+        console.log('Payload sent (modal):', payload);
+        fetch('/cart/add', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+          },
+          body: JSON.stringify(payload)
+        })
+        .then(function(res){ return res.json(); })
+        .then(function(data){
+          console.log('Server response (modal add):', data);
+          try{ if (document.getElementById('cart-count')) { document.getElementById('cart-count').innerText = data.count; } }catch(e){}
+          // keep the alert for UX parity
+          alert('Produk ditambahkan ke keranjang 🛒');
+          closeModal();
+        })
+        .catch(function(err){ console.error(err); });
+      }, true);
+    })();
+  </script>
 
 </body>
 

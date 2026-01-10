@@ -632,7 +632,7 @@ html {
 
 .food_section .btn-box a:hover {
   background-color: #e69c00;
-  
+
 }
 
 .about_section {
@@ -1136,4 +1136,71 @@ html {
 .menu-search input:focus {
   border-color: #f5b942;
   box-shadow: 0 0 0 2px rgba(245, 185, 66, 0.2);
+}
+/* End of CSS file */
+
+/* === Small-screen fixes (<=425px) to prevent image cropping and keep buttons visible === */
+@media (max-width: 425px) {
+  /* Images: scale proportionally, use contain to avoid cropping */
+  .food_section .box .img-box,
+  .offer_section .box .img-box,
+  .about_section .img-box,
+  .client_section .box .img-box,
+  .box .img-box,
+  .modal-body {
+    height: auto !important;
+    max-height: none !important;
+    padding: 8px !important;
+    overflow: visible !important;
+  }
+
+  .food_section .box .img-box img,
+  .offer_section .box .img-box img,
+  .about_section .img-box img,
+  .client_section .box .img-box img,
+  .box .img-box img,
+  .modal-body img {
+    max-width: 100% !important;
+    width: 100% !important;
+    height: auto !important;
+    object-fit: contain !important;
+    -o-object-fit: contain !important;
+    display: block !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
+  /* Prevent hover-scale from cropping on small screens */
+  .food_section .box:hover .img-box img,
+  .food_section .box .img-box img {
+    transform: none !important;
+  }
+
+  /* Cards and containers should grow naturally and not overflow horizontally */
+  .product-card, .box, .card, .modal-content, .filters-content, .grid, .container {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    overflow-x: hidden !important;
+  }
+
+  /* Make sure buttons remain visible and tappable */
+  button, .btn, .box .options a, .user_option .order_online {
+    min-height: 44px !important;
+    height: auto !important;
+    font-size: 14px !important;
+    padding: 10px 12px !important;
+    line-height: 1.2 !important;
+  }
+
+  /* Ensure sticky/fixed totals don't cover content; add bottom padding to content areas */
+  .layout_padding, .food_section, .container { padding-bottom: 120px !important; }
+
+  /* Prevent horizontal scroll by forcing overflow hidden on body wrapper areas */
+  .filters-content, .grid, body, html { overflow-x: hidden !important; }
+
+  /* Modal adjustments: ensure scrollable body and visible footer buttons */
+  .modal-dialog { max-width: 95% !important; margin: 8px auto !important; }
+  .modal-body { max-height: 60vh !important; overflow-y: auto !important; }
+  .modal-footer { display: flex; gap: 8px; flex-direction: column; }
 }

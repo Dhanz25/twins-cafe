@@ -10,24 +10,31 @@ getYear();
 
 // isotope js
 var $grid;
+
 $(window).on('load', function () {
-    $('.filters_menu li').click(function () {
+
+    // INIT ISOTOPE
+    $grid = $('.grid').isotope({
+        itemSelector: '.col-lg-4',
+        layoutMode: 'fitRows'
+    });
+
+    // FILTER MENU
+    $('.filters_menu li').on('click', function () {
         $('.filters_menu li').removeClass('active');
         $(this).addClass('active');
 
-        var data = $(this).attr('data-filter');
-        $grid.isotope({
-            filter: data
-        })
+        var filterValue = $(this).attr('data-filter');
+        $grid.isotope({ filter: filterValue });
     });
 
-    $grid = $(".grid").isotope({
-        itemSelector: ".all",
-        percentPosition: false,
-        masonry: {
-            columnWidth: ".all"
-        }
-    })
+    // VIEW MORE
+    $('#viewMoreBtn').on('click', function () {
+        $('.is-hidden').removeClass('is-hidden');
+        $grid.isotope('layout');
+        $(this).hide();
+    });
+
 });
 
 // nice select
@@ -280,4 +287,70 @@ document.addEventListener('DOMContentLoaded', function () {
     var btn = document.getElementById('searchBtn');
     if (input) input.addEventListener('input', debounce(searchMenu, 250));
     if (btn) btn.addEventListener('click', searchMenu);
+});
+// ===============================
+// MODAL → SIMPAN PRODUCT ID
+// ===============================
+document.addEventListener('DOMContentLoaded', function () {
+
+    document.querySelectorAll('.open-cart').forEach(btn => {
+        btn.addEventListener('click', function () {
+
+            const card = this.closest('.product-card');
+            if (!card) {
+                console.error('Product card not found');
+                return;
+            }
+
+            document.getElementById('modalProductId').value = card.dataset.id;
+            document.getElementById('modalQty').value = 1;
+
+            // optional: tampilkan modal
+            if (window.bootstrap) {
+                new bootstrap.Modal(
+                    document.getElementById('productModal')
+                ).show();
+            }
+        });
+    });
+
+    // ===============================
+    // ADD TO CART DARI MODAL
+    // ===============================
+    const addBtn = document.getElementById('addToCartBtn');
+    if (addBtn) {
+        addBtn.addEventListener('click', function () {
+
+            const productId = document.getElementById('modalProductId').value;
+            const qty = document.getElementById('modalQty').value || 1;
+
+            if (!productId) {
+                alert('Product ID missing');
+                return;
+            }
+
+            fetch('/cart/add', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document
+                        .querySelector('meta[name="csrf-token"]').content
+                },
+                body: JSON.stringify({
+                    product_id: productId,
+                    quantity: qty
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById('cart-count').innerText = data.count;
+                    alert('Produk ditambahkan ke keranjang');
+                } else {
+                    alert(data.message || 'Cart error');
+                }
+            });
+        });
+    }
+
 });
