@@ -2,13 +2,26 @@
     <!-- header section strats -->
         <nav class="navbar navbar-expand-lg custom_nav-container">
             <div class="container">
+          <style>
+            .navbar-toggler{background:transparent;border:0; font-size:24px; display:none}
+            .navbar-toggler-icon{display:inline-block}
+            @media (max-width:991.98px){
+              .navbar-toggler{display:block}
+              .collapse.navbar-collapse{display:block}
+              .collapse.navbar-collapse.show{display:block}
+              .navbar-nav.mx-auto{flex-direction:column;text-align:left}
+              .user_option{margin-top:10px;text-align:center}
+              .navbar-brand{flex:0 0 auto; text-align:left; padding-left:18px}
+            }
+          </style>
           <a class="navbar-brand" href="#">
             <span>
               Twins Coffee
             </span>
           </a>
-          {{-- <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-          </button> --}}
+          <button class="navbar-toggler" type="button" id="navbar-toggler" aria-label="Toggle navigation" aria-expanded="false" aria-controls="navbarSupportedContent">
+            <span class="navbar-toggler-icon">&#9776;</span>
+          </button>
 
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav  mx-auto ">
@@ -28,28 +41,6 @@
             <div class="user_option">
               <a href="" class="user_link">
                 <i class="fa fa-user" aria-hidden="true"></i>
-              </a>
-                  <g>
-                    <g>
-                      <path d="M345.6,338.862c-29.184,0-53.248,23.552-53.248,53.248c0,29.184,23.552,53.248,53.248,53.248
-                   c29.184,0,53.248-23.552,53.248-53.248C398.336,362.926,374.784,338.862,345.6,338.862z" />
-                    </g>
-                  </g>
-                  <g>
-                    <g>
-                      <path d="M439.296,84.91c-1.024,0-2.56-0.512-4.096-0.512H112.64l-5.12-34.304C104.448,27.566,84.992,10.67,61.952,10.67H20.48
-                   C9.216,10.67,0,19.886,0,31.15c0,11.264,9.216,20.48,20.48,20.48h41.472c2.56,0,4.608,2.048,5.12,4.608l31.744,216.064
-                   c4.096,27.136,27.648,47.616,55.296,47.616h212.992c26.624,0,49.664-18.944,55.296-45.056l33.28-166.4
-                   C457.728,97.71,450.56,86.958,439.296,84.91z" />
-                    </g>
-                  </g>
-                  <g>
-                    <g>
-                      <path d="M215.04,389.55c-1.024-28.16-24.576-50.688-52.736-50.688c-29.696,1.536-52.224,26.112-51.2,55.296
-                   c1.024,28.16,24.064,50.688,52.224,50.688h1.024C193.536,443.31,216.576,418.734,215.04,389.55z" />
-                    </g>
-                  </g>
-                </svg>
               </a>
               {{-- <form class="form-inline">
                 <button class="btn  my-2 my-sm-0 nav_search-btn" type="submit">
@@ -78,5 +69,86 @@
             </div>
           </div>
       </div>
+            <script>
+              document.addEventListener('DOMContentLoaded', function(){
+                console.debug('navbar script start');
+                var btn = document.getElementById('navbar-toggler');
+                var collapse = document.getElementById('navbarSupportedContent');
+
+                // create backdrop element (reusable) and insert safely (avoid insertBefore on wrong parent)
+                var backdrop = document.createElement('div');
+                backdrop.className = 'mobile-backdrop';
+                var navElem = document.querySelector('nav');
+                try {
+                  if (navElem && navElem.parentNode) {
+                    // insert into the nav's actual parent to avoid DOMException
+                    navElem.parentNode.insertBefore(backdrop, navElem);
+                  } else {
+                    document.body.appendChild(backdrop);
+                  }
+                  console.debug('navbar: backdrop inserted', backdrop, navElem && navElem.parentNode);
+                } catch (err) {
+                  console.error('navbar: failed to insert backdrop, falling back to append', err);
+                  try { document.body.appendChild(backdrop); console.debug('navbar: backdrop appended as fallback'); } catch (err2) { console.error('navbar: backdrop append failed', err2); }
+                }
+
+                function openMenu(){
+                  collapse.classList.add('show');
+                  // ensure sidebar sits above backdrop/header
+                  collapse.style.zIndex = '10005';
+                  btn.setAttribute('aria-expanded','true');
+                  backdrop.classList.add('show');
+                  // ensure backdrop sits under the menu
+                  backdrop.style.zIndex = '10001';
+                  document.body.style.overflow = 'hidden';
+                  // change toggler to X
+                  btn.querySelector('.navbar-toggler-icon').innerHTML = '&times;';
+                }
+
+                function closeMenu(){
+                  collapse.classList.remove('show');
+                  // clear inline z-index hints
+                  collapse.style.zIndex = '';
+                  btn.setAttribute('aria-expanded','false');
+                  backdrop.classList.remove('show');
+                  backdrop.style.zIndex = '';
+                  document.body.style.overflow = '';
+                  // change toggler back to hamburger
+                  btn.querySelector('.navbar-toggler-icon').innerHTML = '&#9776;';
+                }
+
+                if(btn && collapse){
+                  // debug helper: enable capture-phase click logger when ?debugNav=1 in URL
+                  if (window.location.search.indexOf('debugNav') !== -1) {
+                    console.debug('nav debug: enabling capture click logger');
+                    document.addEventListener('click', function(e){
+                      var el = document.elementFromPoint(e.clientX, e.clientY);
+                      console.debug('GLOBAL CLICK', { x: e.clientX, y: e.clientY, target: e.target, topAtPoint: el });
+                    }, true);
+                    if (btn) { btn.style.outline = '2px solid rgba(255,0,0,0.9)'; btn.style.zIndex = '10006'; }
+                  }
+
+                  console.debug('navbar init - button found:', !!btn, 'collapse found:', !!collapse);
+                  btn.addEventListener('click', function(e){
+                    console.debug('navbar-toggler clicked, aria-expanded before:', btn.getAttribute('aria-expanded'));
+                    var isShown = collapse.classList.contains('show');
+                    if(isShown){
+                      closeMenu();
+                    } else {
+                      openMenu();
+                    }
+                    console.debug('navbar state after click, show:', collapse.classList.contains('show'), 'aria-expanded:', btn.getAttribute('aria-expanded'));
+                  });
+
+                  // close when clicking a link (navigation) or cart/user link
+                  var links = collapse.querySelectorAll('a.nav-link, .user_option a, .cart_link');
+                  links.forEach(function(l){ l.addEventListener('click', function(e){ console.debug('nav link clicked:', e.target); closeMenu(); }); });
+
+                  // clicking backdrop closes menu
+                  backdrop.addEventListener('click', function(){ console.debug('backdrop clicked'); closeMenu(); });
+                }
+
+              });
+            </script>
         </nav>
     <!-- end header section -->

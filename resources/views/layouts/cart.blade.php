@@ -42,6 +42,40 @@
       }
       .cart-item { background: transparent; border-radius: 8px; }
       .cart-total { background: rgba(255,255,255,0.9); border-radius: 8px; }
+
+      /* Responsive tweaks for cart page */
+      @media (max-width: 767.98px) {
+        .cart-item {
+          padding: 12px;
+        }
+        .cart-item .d-flex.justify-content-between {
+          flex-direction: column !important;
+          align-items: flex-start !important;
+          gap: 12px;
+        }
+        .cart-item img {
+          width: 64px !important;
+          height: 64px !important;
+          object-fit: cover;
+        }
+        .cart-item .qty-box {
+          margin-top: 6px;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+        }
+        /* Make price row span full width and align right */
+        .cart-item .text-end {
+          width: 100%;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+        .cart-item .text-end strong { margin-left: auto; }
+        .cart-total { margin-top: 1rem; }
+        .heading_container { padding-left: 12px; padding-right: 12px; }
+        .container { padding-left: 12px; padding-right: 12px; }
+      }
     </style>
 </head>
 <body class="sub_page cart-bg">
@@ -100,8 +134,12 @@
                 </a>
             </div>
           </div>
+
+          <!-- Mobile fixed back button (top-right) -->
+          <a href="{{ route('menu.index') }}" class="fixed-back-btn btn btn-outline-dark d-lg-none">⬅ Kembali ke Menu</a>
+
       </div>
-        </nav>
+        </nav> 
     <!-- end header section -->
 </nav>
 

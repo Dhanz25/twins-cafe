@@ -76,12 +76,14 @@ $(".client_owl-carousel").owlCarousel({
         }
     }
 });
-window.addEventListener("scroll", function () {
+(function(){
     const header = document.getElementById("navbar");
     const navLinks = document.querySelectorAll(".nav-link");
     const sections = document.querySelectorAll("section[id], .hero_area[id]");
 
-    window.addEventListener("scroll", () => {
+    function onScrollHandler(){
+        if(!header) return;
+
         /* ===== Navbar background ===== */
         if (window.scrollY > 50) {
             header.classList.add("scrolled");
@@ -105,8 +107,11 @@ window.addEventListener("scroll", function () {
                 link.classList.add("active");
             }
         });
-    });
-});
+    }
+
+    window.addEventListener('scroll', onScrollHandler);
+    document.addEventListener('DOMContentLoaded', onScrollHandler);
+})();
 
 document.addEventListener("DOMContentLoaded", function () {
     const buttons = document.querySelectorAll(".filters_menu li");
@@ -354,3 +359,21 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
 });
+
+
+const toggle = document.getElementById('mobileToggle');
+const menu = document.getElementById('mobileMenu');
+const backdrop = document.querySelector('.mobile-backdrop');
+
+toggle.addEventListener('click', () => {
+  menu.classList.toggle('show');
+  backdrop.classList.toggle('show');
+});
+
+backdrop.addEventListener('click', () => {
+  menu.classList.remove('show');
+  backdrop.classList.remove('show');
+});
+
+
+

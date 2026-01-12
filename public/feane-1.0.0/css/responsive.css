@@ -1,97 +1,173 @@
-@media (max-width: 1300px) {}
-
-@media (max-width: 1120px) {}
-
 @media (max-width: 992px) {
-  .hero_area {
-    min-height: auto;
-  }
 
-  .custom_nav-container .navbar-nav {
-    padding-top: 15px;
-padding-left: 0;
+  .custom_nav-container {
+    position: relative;
+    display: flex;
     align-items: center;
   }
 
-  .user_option{
-    justify-content: center;
-    margin-top: 15px;
-  }
-  .custom_nav-container .navbar-nav .nav-item .nav-link {
-    padding: 5px 25px;
-    margin: 5px 0;
-  }
-
-  .slider_section .carousel-indicators {
-    margin-top: 45px;
-  }
-
-  .offer_section .box {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-  }
-
-  .offer_section .box .img-box {
-    margin-right: 0;
-    margin-bottom: 15px;
-  }
-}
-
-@media (max-width: 767px) {
-
-  .about_section .detail-box,
-  .book_section .form_container {
-    margin-bottom: 45px;
-  }
-
-  .about_section .row {
-    flex-direction: column-reverse;
-  }
-
-  .offer_section .box {
-    flex-direction: row;
+  /* brand alignment on mobile and hamburger positioning */
+  .navbar-brand {
+    flex: 0 0 auto;
     text-align: left;
+    padding-left: 18px;
+    margin: 0;
   }
 
-  .offer_section .box .img-box {
-    margin-right: 15px;
-    margin-bottom: 0;
+  /* hamburger: right, above everything but not overlapping brand */
+  .navbar-toggler {
+    position: absolute;
+    right: 18px;
+    top: 50%;
+    transform: translateY(-50%);
+    border: none;
+    outline: none;
+    /* FORCE high z-index and pointer events while debugging */
+    z-index: 200000 !important; /* ensure it's above any overlay */
+    pointer-events: auto !important;
+    touch-action: manipulation;
+    background: transparent;
+    padding: 6px 10px;
+    font-size: 22px;
   }
+
+  /* Defensive: make the icon itself clickable and visible on top */
+  .navbar-toggler .navbar-toggler-icon { pointer-events: auto !important; z-index: 200001 !important; }
+
+  .navbar-toggler-icon { background: none; color: #111; }
+
+  .navbar-nav .nav-link {
+    font-size: 1.05rem;
+    padding: 12px 0;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    text-align: left; /* left-aligned in sidebar */
+    color: #000 !important; /* ensure readable on white mobile background */
+    border-bottom: none !important;
+    text-decoration: none !important;
+  }
+
+  /* mobile menu link active state */
+  .navbar-collapse .navbar-nav .nav-link.active,
+  .navbar-collapse .navbar-nav .nav-item.active .nav-link {
+    color: #000 !important;
+    border-bottom: none !important;
+  }
+
+  .navbar-collapse .navbar-nav .nav-link:hover,
+  .navbar-collapse .navbar-nav .nav-link:focus {
+    color: #000 !important;
+    text-decoration: none !important;
+    opacity: 0.95;
+  }
+
+  .user_option {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    gap: 18px;
+    margin-top: 18px;
+    order: 999;
+  }
+
+  /* brand and toggler color on mobile */
+  .navbar-brand span { color: #000 !important; }
+  .navbar-toggler .navbar-toggler-icon { font-size: 22px; color: #000; }
+
+  #cart-count {
+    top: -6px;
+    right: -8px;
+    transform: scale(0.95);
+  }
+
+  /* --- SIDEBAR STYLE --- */
+  .navbar-collapse {
+    position: fixed;
+    top: 0;
+    right: -320px; /* hidden by default */
+    width: 320px;
+    height: 100vh;
+    overflow-y: auto;
+    background: #fff;
+    padding: 90px 20px 20px;
+    transition: right 0.35s ease;
+    z-index: 10005; /* put sidebar well above header/backdrop */
+    box-shadow: -6px 0 24px rgba(0,0,0,0.12);
+    pointer-events: auto; /* ensure links receive pointer events */
+  }
+
+  .navbar-collapse.show {
+    right: 0;
+  }
+
+  /* fallback: make it visible when toggler reports expanded (helps if script didn't toggle .show) */
+  .navbar-toggler[aria-expanded="true"] + .navbar-collapse {
+    right: 0 !important;
+  }
+
+  /* ensure children receive pointer events */
+  .navbar-collapse, .navbar-collapse * {
+    pointer-events: auto;
+  }
+
+  /* visual debug helpers (remove once confirmed fixed) */
+  .navbar-collapse { opacity: 0.99; border-left: 3px solid rgba(0,0,0,0.04); }
+
+
+  /* close button inside sidebar */
+  /* remove close-mobile rules (not used) */
+
+  /* ensure the mobile backdrop is under the menu */
+  .mobile-backdrop { z-index: 10001; }
+
+  /* MENU STACK */
+  .navbar-nav { text-align: left; padding-left: 8px; }
+
+  .navbar-nav .nav-link { padding: 14px 8px; font-size: 1rem; color: #222; }
+
+  /* USER OPTION DI BAWAH */
+  .user_option { margin-top: 30px; justify-content: center; }
+
+  /* ensure user/cart icons are visible */
+  .user_option a, .user_option i { color: #222 !important; }
+  .cart_link svg { fill: #222; }
+  /* ensure cart icon matches other pages on mobile */
+  .user_option .cart_link svg { fill: #000 !important; }
+
+  /* fixed back button for mobile (top-right) */
+  .fixed-back-btn {
+    position: fixed;
+    top: calc(12px + env(safe-area-inset-top, 0));
+    right: calc(12px + env(safe-area-inset-right, 0));
+    z-index: 11000; /* above header/backdrop */
+    padding: 8px 12px;
+    border-radius: 8px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+    margin: 0;
+    display: inline-block;
+  }
+  /* slightly larger touch target on small screens */
+  @media (max-width: 480px) {
+    .fixed-back-btn { padding: 10px 14px; }
+  }
+
+
+}
+.mobile-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  opacity: 0;
+  pointer-events: none;
+  transition: 0.3s;
+  z-index: 10001; /* behind sidebar but above header */
 }
 
-@media (max-width: 576px) {}
-
-@media (max-width: 480px) {}
-
-@media (max-width: 430px) {
-  .offer_section .box {
-    flex-direction: column;
-    text-align: center;
-  }
-
-  .offer_section .box .img-box {
-    margin-right: 0;
-    margin-bottom: 15px;
-  }
-}
-
-@media (max-width: 376px) {
-  .slider_section .detail-box h1 {
-    font-size: 3rem;
-  }
-}
-
-@media (min-width: 1200px) {
-  .container {
-    max-width: 1170px;
-  }
+.mobile-backdrop.show {
+  opacity: 1;
+  pointer-events: all;
 }
 
 
-@media (min-width:576px) and (max-width:991px) {
-  .rent_solution_container .col-md-4.col-sm-6 {
-    float: left;
-    width: 50%;
-  }
-}
+
+
