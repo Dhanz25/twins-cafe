@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use App\Models\Produk;
 use App\Models\Transaksi;
-use App\Models\DetailTransaksi;
+use App\Models\TransaksiDetail;
 use Illuminate\Support\Facades\DB;
 use Midtrans\Config;
 use Midtrans\Snap;
@@ -52,26 +52,29 @@ class CheckoutController extends Controller
             return $harga * $qty;
         });
 
-        // perform DB transaction: create transaksi and detail_transaksi rows atomically
+        // perform DB transaction: create transaksi and transaksi_detail rows atomically
         try {
             $transaksi = DB::transaction(function() use ($noMeja, $cart, $total) {
+                // create transaksi record following your schema
                 $trans = Transaksi::create([
-                    'tanggal' => now()->toDateString(),
-                    'id_pelanggan' => null,
+                    'session_id' => session()->getId(),
                     'no_meja' => $noMeja,
                     'total' => $total,
+                    'status' => 'checkout',
                 ]);
 
-                // insert detail_transaksi for each cart item
+                // insert transaksi_detail for each cart item
                 foreach ($cart as $pid => $item) {
                     $id_produk = isset($item['id']) ? $item['id'] : $pid;
-                    $jumlah = intval($item['qty'] ?? $item['quantity'] ?? 1);
-                    $subtotal = isset($item['subtotal']) ? intval($item['subtotal']) : (intval($item['harga'] ?? 0) * $jumlah);
+                    $qty = intval($item['qty'] ?? $item['quantity'] ?? 1);
+                    $harga = intval($item['harga'] ?? $item['price'] ?? 0);
+                    $subtotal = isset($item['subtotal']) ? intval($item['subtotal']) : ($harga * $qty);
 
-                    DetailTransaksi::create([
+                    TransaksiDetail::create([
                         'id_transaksi' => $trans->id_transaksi,
                         'id_produk' => $id_produk,
-                        'jumlah' => $jumlah,
+                        'qty' => $qty,
+                        'harga' => $harga,
                         'subtotal' => $subtotal,
                     ]);
                 }
@@ -79,15 +82,15 @@ class CheckoutController extends Controller
                 return $trans;
             });
         } catch (\Throwable $e) {
-            // rollback handled by DB::transaction; return back with error
             return redirect()->back()->withErrors(['checkout' => 'Gagal menyimpan pesanan. Silakan coba lagi.']);
         }
 
         // clear cart session only after successful DB transaction
         session()->forget('cart');
+        // store last transaction id for success view
+        session()->put('last_transaction_id', $transaksi->id_transaksi);
 
-        // Redirect back with success message
-        return redirect()->back()->with('success', 'Pesanan berhasil. ID: ' . $transaksi->id_transaksi);
+        return redirect()->route('checkout.success');
     }
 
     /**
@@ -142,50 +145,6 @@ class CheckoutController extends Controller
             ];
             $gross_amount += $subtotal;
         }
-
-        // Midtrans config
-        Config::$serverKey = config('services.midtrans.server_key');
-        Config::$isProduction = filter_var(config('services.midtrans.is_production'), FILTER_VALIDATE_BOOLEAN);
-        Config::$clientKey = config('services.midtrans.client_key');
-
-        $params = [
-            'transaction_details' => [
-                'order_id' => $orderId,
-                'gross_amount' => $gross_amount,
-            ],
-            'item_details' => $item_details,
-        ];
-
-        $snapToken = Snap::getSnapToken($params);
-
-        // store order id temporarily in session for later reference
-        session()->put('checkout_order_id', $orderId);
-
-        return response()->json(['token' => $snapToken, 'order_id' => $orderId]);
-    }
-
-    public function callback(Request $request)
-    {
-        // Midtrans notification handling
-        Config::$serverKey = config('services.midtrans.server_key');
-        Config::$isProduction = filter_var(config('services.midtrans.is_production'), FILTER_VALIDATE_BOOLEAN);
-
-        // Use Notification helper from SDK
-        try {
-            $notification = new Notification();
-            $transactionStatus = $notification->transaction_status;
-            $orderId = $notification->order_id ?? null;
-
-            if ($transactionStatus === 'settlement' || $transactionStatus === 'capture') {
-                // successful payment -> clear cart
-                session()->forget('cart');
-                // optionally record order in DB here
-            }
-
-            return response('OK');
-        } catch (\Exception $e) {
-            return response('ERR', 500);
-        }
     }
 
     public function success()
@@ -194,12 +153,11 @@ class CheckoutController extends Controller
         if (!$lastId) {
             return redirect()->route('menu.index');
         }
-
-        $transaksi = Transaksi::find($lastId);
+        $transaksi = Transaksi::with('detail.produk')->find($lastId);
         if (!$transaksi) {
             return redirect()->route('menu.index');
         }
 
-        return view('checkout.success', ['transaksi' => $transaksi]);
+        return view('checkout-success', ['transaksi' => $transaksi]);
     }
 }

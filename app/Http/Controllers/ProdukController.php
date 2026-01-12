@@ -16,7 +16,7 @@ class ProdukController extends Controller
         $produks = Produk::with('kategori')->get();
         $kategoris = Kategori::all();
 
-        return view('layouts.home','layouts.admin.produk', compact('produks', 'kategoris'));
+        return view('layouts.home', compact('produks', 'kategoris'));
     }
 
     /**

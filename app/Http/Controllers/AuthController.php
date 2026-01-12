@@ -9,19 +9,35 @@ class AuthController extends Controller
 {
     public function login(Request $request)
     {
-        $credentials = $request->only('email', 'password');
+        $credentials = $request->validate([
+            'email' => 'required|email',
+            'password' => 'required'
+        ]);
 
-        if (Auth::attempt($credentials)) {
-            // Authentication passed...
-            return redirect()->route('home');
+        if (!Auth::attempt($credentials)) {
+            return back()->withErrors([
+                'email' => 'Email atau password salah'
+            ]);
         }
 
-        return back()->withErrors(['email' => 'Invalid credentials']);
+        $user = Auth::user();
+
+        if ($user->email !== 'admin@gmail.com') {
+            Auth::logout();
+            return back()->withErrors([
+                'email' => 'Bukan admin'
+            ]);
+        }
+
+        $request->session()->regenerate();
+        return redirect()->route('admin.index');
     }
 
-    public function logout()
+    public function logout(Request $request)
     {
         Auth::logout();
-        return redirect('/');
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        return redirect()->route('login');
     }
 }

@@ -3,11 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <title>Login</title>
+    <link rel="icon" href="{{ asset('images/logoTwins_coffe.png') }}">
     <style>
         body {
             font-family: Arial, sans-serif;
             background-image: url('/images/bg-login.jpg');
-            background-size: cover; 
+            background-size: cover;
             background-position: center;
             display: flex;
             justify-content: center;
@@ -60,7 +61,7 @@
             text-align: center;
             margin-top: 15px;
         }
-        
+
     </style>
 </head>
 <body>
@@ -76,7 +77,7 @@
             </ul>
         </div>
     @endif
-    <form action="{{ route('postLogin') }}" method="POST">
+    <form action="{{ route('login.post') }}" method="POST">
         @csrf
         <label>Email</label>
         <input type="email" name="email" required>

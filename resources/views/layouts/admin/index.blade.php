@@ -42,12 +42,6 @@
       <li class="nav-item">
         <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
       </li>
-      <!-- <li class="nav-item d-none d-sm-inline-block">
-        <a href="../../index3.html" class="nav-link">Home</a>
-      </li>
-      <li class="nav-item d-none d-sm-inline-block">
-        <a href="#" class="nav-link">Contact</a>
-      </li> -->
     </ul>
 
     <!-- Right navbar links -->
@@ -135,12 +129,15 @@
             </a>
           </li>
           <li class="nav-item">
-            <a href="#" class="nav-link">
+            <a href="#" class="nav-link" onclick="event.preventDefault(); if(confirm('Yakin ingin logout?')) { document.getElementById('sidebar-logout-form').submit(); }">
               <i class="nav-icon fas fa-arrow-right"></i>
               <p>
                 Logout
               </p>
             </a>
+            <form id="sidebar-logout-form" action="{{ route('logout') }}" method="POST" style="display:none;">
+              @csrf
+            </form>
           </li>
         </ul>
       </nav>
@@ -184,7 +181,7 @@
               </div>
               <div class="icon">
                 <i class="ion ion-bag"></i>
-              </div>  
+              </div>
               <a href="{{ route ('admin.transaksi')}}" class="small-box-footer">Selengkapnya <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>

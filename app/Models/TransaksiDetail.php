@@ -19,6 +19,7 @@ class TransaksiDetail extends Model
         'id_produk',
         'qty',
         'jumlah',
+        'harga',
         'subtotal'
     ];
 

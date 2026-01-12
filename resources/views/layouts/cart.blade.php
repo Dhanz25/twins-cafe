@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>@yield('title', 'Keranjang | Twins Coffee')</title>
+    <link rel="icon" href="{{ asset('images/logoTwins_coffe.png') }}">
 
     <!-- BOOTSTRAP -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -139,7 +140,7 @@
           <a href="{{ route('menu.index') }}" class="fixed-back-btn btn btn-outline-dark d-lg-none">⬅ Kembali ke Menu</a>
 
       </div>
-        </nav> 
+        </nav>
     <!-- end header section -->
 </nav>
 
@@ -182,6 +183,14 @@
                             <strong class="text-success">
                               Rp {{ number_format(($item['subtotal'] ?? (($item['harga'] ?? $item['price'] ?? 0) * ($item['qty'] ?? 1))),0,',','.') }}
                             </strong>
+                        </div>
+
+                        <div class="ms-3">
+                          <form method="POST" action="{{ route('cart.remove') }}" onsubmit="return confirm('Hapus item ini dari keranjang?');">
+                            @csrf
+                            <input type="hidden" name="product_id" value="{{ $item['id'] }}" />
+                            <button type="submit" class="btn btn-sm btn-outline-danger">Hapus</button>
+                          </form>
                         </div>
 
                     </div>

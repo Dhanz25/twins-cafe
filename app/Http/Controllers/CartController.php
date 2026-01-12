@@ -111,7 +111,32 @@ class CartController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        // Keep RESTful destroy for future use
+    }
+
+    /**
+     * Remove single product from cart (by product id)
+     */
+    public function remove(Request $request)
+    {
+        $validated = $request->validate([
+            'product_id' => 'required|integer'
+        ]);
+
+        $pid = (string) $validated['product_id'];
+        $cart = session()->get('cart', []);
+
+        if (isset($cart[$pid])) {
+            unset($cart[$pid]);
+            session()->put('cart', $cart);
+        }
+
+        // If request is AJAX, return JSON status
+        if ($request->wantsJson() || $request->ajax()) {
+            return response()->json(['success' => true, 'count' => collect($cart)->sum('qty')]);
+        }
+
+        return redirect()->route('cart.index');
     }
     public function add(Request $request)
     {

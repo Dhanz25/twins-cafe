@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Twins Coffe | Produk</title>
+  <title>Twins Coffe | Transaksi</title>
   <link rel="icon" href="{{ asset('images/logoTwins_coffe.png') }}">
 
   <!-- Google Font: Source Sans Pro -->
@@ -52,24 +52,6 @@
               </div>
             </div>
           </form>
-        </div>
-      </li>
-
-      <!-- Notifications Dropdown Menu -->
-      <li class="nav-item dropdown">
-        <a class="nav-link" data-toggle="dropdown" href="#">
-          <i class="far fa-bell"></i>
-          <span class="badge badge-warning navbar-badge">15</span>
-        </a>
-        <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-          <span class="dropdown-item dropdown-header">15 Notifications</span>
-          <div class="dropdown-divider"></div>
-          <a href="#" class="dropdown-item">
-            <i class="fas fa-envelope mr-2"></i> 4 new messages
-            <span class="float-right text-muted text-sm">3 mins</span>
-          </a>
-          <div class="dropdown-divider"></div>
-          <a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>
         </div>
       </li>
       <li class="nav-item">
@@ -132,6 +114,17 @@
                 Data Transaksi
               </p>
             </a>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link" onclick="event.preventDefault(); if(confirm('Yakin ingin logout?')) { document.getElementById('sidebar-logout-form').submit(); }">
+              <i class="nav-icon fas fa-arrow-right"></i>
+              <p>
+                Logout
+              </p>
+            </a>
+            <form id="sidebar-logout-form" action="{{ route('logout') }}" method="POST" style="display:none;">
+              @csrf
+            </form>
           </li>
         </ul>
       </nav>

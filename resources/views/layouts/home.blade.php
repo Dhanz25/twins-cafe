@@ -13,6 +13,7 @@
 
 
   <title> Twins Caffe </title>
+  <link rel="icon" href="{{ asset('images/logoTwins_coffe.png') }}">
 
   <!-- bootstrap core css -->
   <link rel="stylesheet" type="text/css" href="{{  asset('feane-1.0.0/css/bootstrap.css') }}" />
@@ -75,10 +76,10 @@
                       Twins Coffee Purwokerto
                     </h1>
                     <p>
-                      Menghadirkan kopi berkualitas dengan cita rasa khas dalam suasana hangat dan nyaman. Tempat yang pas untuk bersantai dan menikmati setiap momen bersama secangkir kopi terbaik.
+                      Kopi berkualitas dengan rasa khas dalam suasana hangat dan nyaman. Tempat yang pas untuk bersantai dan menikmati setiap momen dengan secangkir kopi.
                     </p>
                     <div class="btn-box">
-                      <a href="" class="btn1">
+                      <a href="#menu" class="btn1">
                         Order Now
                       </a>
                     </div>
@@ -120,7 +121,7 @@
                       Nikmati suasana cozy dengan kopi enak dan vibes santai. Tempat yang pas buat nongkrong bareng teman, ngobrol lama, atau sekadar lepas penat sambil ngopi.
                     </p>
                     <div class="btn-box">
-                      <a href="" class="btn1">
+                      <a href="#menu" class="btn1">
                         Order Now
                       </a>
                     </div>
@@ -162,7 +163,7 @@
               Twins Coffee hadir sebagai angkringan kopi modern yang menggabungkan tradisi dan rasa. Kami menyajikan kopi pilihan dengan racikan sederhana namun penuh karakter, ditemani aneka menu angkringan favorit yang cocok dinikmati kapan saja.
 Lebih dari sekadar tempat ngopi, Twins Coffee adalah ruang berkumpul, berbagi cerita, dan menikmati momen santai bersama.
             </p>
-            <a href="">
+            <a href="#menu">
               Selanjutnya
             </a>
           </div>
