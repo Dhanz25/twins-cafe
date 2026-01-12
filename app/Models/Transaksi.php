@@ -7,13 +7,20 @@ use Illuminate\Database\Eloquent\Model;
 class Transaksi extends Model
 {
     protected $table = 'transaksi';
+
+    // primary key column in migration is `id_transaksi`
     protected $primaryKey = 'id_transaksi';
     public $incrementing = true;
-    protected $keyType = 'int';
 
-    // allow mass assignment for specific fields
-    protected $fillable = ['tanggal', 'id_pelanggan', 'no_meja', 'total'];
+    protected $fillable = [
+        'session_id',
+        'no_meja',
+        'total',
+        'status'
+    ];
 
-    // timestamps enabled
-    public $timestamps = true;
+    public function detail()
+    {
+        return $this->hasMany(TransaksiDetail::class, 'id_transaksi');
+    }
 }
