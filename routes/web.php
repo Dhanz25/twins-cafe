@@ -5,6 +5,7 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\LoginController;
 use App\Models\Transaksi;
+use App\Models\Kategori;
 use Illuminate\Support\Facades\Route;
 
 // Route untuk menampilkan form login (GET)
@@ -33,6 +34,38 @@ Route::get('/admin/produk/{id}/edit', [ProdukController::class, 'edit'])->name('
 Route::put('/admin/produk/{id}', [ProdukController::class, 'update'])->name('admin.produk.update');
 Route::delete('/admin/produk/{id}', [ProdukController::class, 'destroy'])->name('admin.produk.destroy');
 Route::post('/admin/produk', [ProdukController::class, 'store'])->name('admin.produk.store');
+
+// Chart route: prepare data for donut (kategori counts) and weekly transaksi bar chart
+Route::get('/admin/chart', function () {
+    // Donut: count products per kategori
+    $kats = Kategori::withCount('produk')->get();
+    $kategoriLabels = $kats->pluck('nama_kategori')->map(function ($v) { return $v ?? 'Unknown'; })->toArray();
+    $kategoriData = $kats->pluck('produk_count')->toArray();
+
+    // Bar: transaksi per week (last 8 weeks)
+    $weeks = [];
+    $weekData = [];
+    $now = \Carbon\Carbon::now();
+    for ($i = 7; $i >= 0; $i--) {
+        $start = $now->copy()->startOfWeek()->subWeeks($i);
+        $end = $start->copy()->endOfWeek();
+        $label = $start->format('d/m') . ' - ' . $end->format('d/m');
+        $weeks[] = $label;
+        $sum = Transaksi::whereDate('tanggal', '>=', $start->toDateString())
+            ->whereDate('tanggal', '<=', $end->toDateString())
+            ->sum('total');
+        // fallback to created_at if tanggal empty
+        if ($sum == 0) {
+            $sum = Transaksi::whereDate('created_at', '>=', $start->toDateString())
+                ->whereDate('created_at', '<=', $end->toDateString())
+                ->sum('total');
+        }
+        $weekData[] = (int)$sum;
+    }
+
+    return view('layouts.admin.chart', compact('kategoriLabels', 'kategoriData', 'weeks', 'weekData'));
+})->name('admin.chart');
+
 // Route untuk halaman transaksi di admin
 Route::get('/admin/transaksi', function () {
     // load transaksi with details (no pelanggan)
@@ -43,6 +76,11 @@ Route::get('/admin/transaksi', function () {
 // Route to return invoice detail HTML for a transaksi (used by modal)
 Route::get('/admin/transaksi/{id}', function ($id) {
     $transaksi = Transaksi::with('detail.produk')->findOrFail($id);
+    // if requested via AJAX (modal), return partial HTML only
+    if (request()->ajax()) {
+        return view('layouts.admin.transaksi_invoice_partial', compact('transaksi'));
+    }
+    // otherwise return the full page (for direct visits)
     return view('layouts.admin.transaksi_invoice', compact('transaksi'));
 })->name('admin.transaksi.show');
 

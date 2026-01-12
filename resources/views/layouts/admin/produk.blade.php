@@ -150,15 +150,6 @@
               </p>
             </a>
           </li>
-
-          <li class="nav-item">
-            <a href="{{ asset ('AdminLTE-master/pages/charts/chartjs.html') }}" class="nav-link">
-              <i class="nav-icon fas fa-chart-pie"></i>
-              <p>
-                Data Penjualan
-              </p>
-            </a>
-          </li>
           <li class="nav-item">
             <a href="{{ route('admin.produk') }}" class="nav-link active">
               <i class="nav-icon fas fa-edit"></i>
@@ -172,15 +163,6 @@
               <i class="nav-icon fas fa-table"></i>
               <p>
                 Data Transaksi
-              </p>
-            </a>
-          </li>
-
-          <li class="nav-item">
-            <a href="{{ asset ('AdminLTE-master/pages/examples/invoice.html') }}" class="nav-link">
-              <i class="nav-icon fas fa-book"></i>
-              <p>
-                Invoice
               </p>
             </a>
           </li>

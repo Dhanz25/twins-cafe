@@ -118,14 +118,6 @@
           </li>
 
           <li class="nav-item">
-            <a href="{{ asset ('AdminLTE-master/pages/charts/chartjs.html') }}" class="nav-link">
-              <i class="nav-icon fas fa-chart-pie"></i>
-              <p>
-                Data Penjualan
-              </p>
-            </a>
-          </li>
-          <li class="nav-item">
             <a href="{{ route('admin.produk') }}" class="nav-link">
               <i class="nav-icon fas fa-edit"></i>
               <p>
@@ -138,15 +130,6 @@
               <i class="nav-icon fas fa-table"></i>
               <p>
                 Data Transaksi
-              </p>
-            </a>
-          </li>
-
-          <li class="nav-item">
-            <a href="{{ asset ('AdminLTE-master/pages/examples/invoice.html') }}" class="nav-link">
-              <i class="nav-icon fas fa-book"></i>
-              <p>
-                Invoice
               </p>
             </a>
           </li>
@@ -207,7 +190,7 @@
                       <td>Rp {{ number_format($t->total ?? 0,0,',','.') }}</td>
                       <td>{{ $t->status ?? '-' }}</td>
                       <td>
-                        <a href="#" class="btn btn-sm btn-primary btn-detil" data-id="{{ $t->id_transaksi }}">Detil</a>
+                        <a href="#" class="btn btn-sm btn-primary btn-detil" data-id="{{ $t->id_transaksi }}">Detail</a>
                       </td>
                     </tr>
                     @empty
@@ -294,7 +277,20 @@ $(function () {
           .html('<div class="text-danger text-center">Gagal memuat data</div>');
       });
   });
-});
+  // Print invoice from modal
+  $(document).on('click', '#btn-print-invoice', function () {
+    const content = $('#invoiceModal .modal-body').html();
+    const printWindow = window.open('', '_blank');
+    const fontLink = '<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback" rel="stylesheet">';
+    const cssLink = '<link rel="stylesheet" href="' + "{{ asset('AdminLTE-master/dist/css/adminlte.min.css') }}" + '">';
+
+    printWindow.document.open();
+    printWindow.document.write('<html><head><title>Invoice #'+ (typeof content !== 'string' ? '' : '') +'</title>' + fontLink + cssLink + '<style>body{padding:20px}</style></head><body>' + content + '</body></html>');
+    printWindow.document.close();
+    printWindow.focus();
+    // give browser a little time to render styles
+    setTimeout(function () { printWindow.print(); }, 300);
+  });});
 </script>
 
 
