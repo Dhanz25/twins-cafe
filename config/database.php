@@ -86,16 +86,16 @@ return [
         'pgsql' => [
             'driver' => 'pgsql',
             'url' => env('DB_URL'),
-            'host' => env('DB_HOST', 'db.fohuayqsolxdycmxngok.supabase.co'),
+            'host' => env('DB_HOST', '127.0.0.1'),
             'port' => env('DB_PORT', '5432'),
-            'database' => env('DB_DATABASE', 'postgres'), // Ganti 'forge' jadi 'postgres'
-            'username' => env('DB_USERNAME', 'postgres'), // Ganti 'forge' jadi 'postgres'
-            'password' => env('DB_PASSWORD', 'FlsvIHgRHO4sQd0K'), // Ganti password asli
+            'database' => env('DB_DATABASE', 'postgres'),
+            'username' => env('DB_USERNAME', 'postgres'),
+            'password' => env('DB_PASSWORD', ''),
             'charset' => env('DB_CHARSET', 'utf8'),
             'prefix' => '',
             'prefix_indexes' => true,
             'search_path' => 'public',
-            'sslmode' => 'prefer',
+            'sslmode' => env('DB_SSLMODE', 'prefer'),
         ],
 
         'sqlsrv' => [
