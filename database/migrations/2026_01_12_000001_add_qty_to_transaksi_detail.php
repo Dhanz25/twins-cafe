@@ -12,22 +12,20 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // Add nullable qty column, copy existing `jumlah` values into it, then try to make it NOT NULL
-        Schema::table('transaksi_detail', function (Blueprint $table) {
-            if (!Schema::hasColumn('transaksi_detail', 'qty')) {
+        // Add nullable qty column, copy existing jumlah values into it
+        Schema::table('detail_transaksi', function (Blueprint $table) {
+            if (!Schema::hasColumn('detail_transaksi', 'qty')) {
                 $table->integer('qty')->nullable()->after('jumlah');
             }
         });
 
         // Copy existing values from jumlah to qty for existing rows
-        DB::table('transaksi_detail')->whereNull('qty')->update(['qty' => DB::raw('jumlah')]);
+        DB::table('detail_transaksi')->whereNull('qty')->update(['qty' => DB::raw('jumlah')]);
 
-        // Attempt to set NOT NULL (works on MySQL). If DBAL/driver doesn't allow, ignore the exception.
-        try {
-            DB::statement('ALTER TABLE transaksi_detail MODIFY qty INT NOT NULL');
-        } catch (\Throwable $e) {
-            // ignore if ALTER MODIFY fails (e.g., different DB driver or missing permissions)
-        }
+        // Attempt to set NOT NULL using cross-compatible schema builder
+        Schema::table('detail_transaksi', function (Blueprint $table) {
+            $table->integer('qty')->nullable(false)->change();
+        });
     }
 
     /**
@@ -35,8 +33,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('transaksi_detail', function (Blueprint $table) {
-            if (Schema::hasColumn('transaksi_detail', 'qty')) {
+        Schema::table('detail_transaksi', function (Blueprint $table) {
+            if (Schema::hasColumn('detail_transaksi', 'qty')) {
                 $table->dropColumn('qty');
             }
         });
