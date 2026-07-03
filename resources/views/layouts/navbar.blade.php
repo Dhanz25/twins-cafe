@@ -19,6 +19,19 @@
               Twins Coffee
             </span>
           </a>
+
+          <!-- Tombol Cart khusus mobile agar selalu tampil di sebelah tombol hamburger -->
+          <div class="user_option d-flex d-lg-none" style="position: absolute; right: 65px; top: 50%; transform: translateY(-50%); z-index: 200000; margin-top: 0;">
+            <a class="cart_link" href="/cart" style="position: relative; color: #111;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-cart2" viewBox="0 0 16 16">
+                <path d="M0 2.5A.5.5 0 0 1 .5 2H2a.5.5 0 0 1 .485.379L2.89 4H14.5a.5.5 0 0 1 .485.621l-1.5 6A.5.5 0 0 1 13 11H4a.5.5 0 0 1-.485-.379L1.61 3H.5a.5.5 0 0 1-.5-.5M3.14 5l1.25 5h8.22l1.25-5zM5 13a1 1 0 1 0 0 2 1 1 0 0 0 0-2m-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0m9-1a1 1 0 1 0 0 2 1 1 0 0 0 0-2m-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0"/>
+              </svg>
+              <span style="position:absolute; top:-6px; right:-10px; background:red; color:white; font-size:11px; padding:2px 5px; border-radius:50%;">
+                {{ collect(session('cart', []))->sum('qty') }}
+              </span>
+            </a>
+          </div>
+
           <button class="navbar-toggler" type="button" id="navbar-toggler" aria-label="Toggle navigation" aria-expanded="false" aria-controls="navbarSupportedContent">
             <span class="navbar-toggler-icon">&#9776;</span>
           </button>
@@ -34,31 +47,28 @@
               <li class="nav-item">
                 <a class="nav-link" href="#menu">Menu</a>
               </li>
-              {{-- <li class="nav-item">
-                <a class="nav-link" href="#testimoni">Testimoni</a>
-              </li> --}}
             </ul>
-            <div class="user_option">
+            <div class="user_option d-none d-lg-flex">
               
               <a class="cart_link" href="/cart" style="position: relative;">
-  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cart2" viewBox="0 0 16 16">
-  <path d="M0 2.5A.5.5 0 0 1 .5 2H2a.5.5 0 0 1 .485.379L2.89 4H14.5a.5.5 0 0 1 .485.621l-1.5 6A.5.5 0 0 1 13 11H4a.5.5 0 0 1-.485-.379L1.61 3H.5a.5.5 0 0 1-.5-.5M3.14 5l1.25 5h8.22l1.25-5zM5 13a1 1 0 1 0 0 2 1 1 0 0 0 0-2m-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0m9-1a1 1 0 1 0 0 2 1 1 0 0 0 0-2m-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0"/>
-</svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cart2" viewBox="0 0 16 16">
+                  <path d="M0 2.5A.5.5 0 0 1 .5 2H2a.5.5 0 0 1 .485.379L2.89 4H14.5a.5.5 0 0 1 .485.621l-1.5 6A.5.5 0 0 1 13 11H4a.5.5 0 0 1-.485-.379L1.61 3H.5a.5.5 0 0 1-.5-.5M3.14 5l1.25 5h8.22l1.25-5zM5 13a1 1 0 1 0 0 2 1 1 0 0 0 0-2m-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0m9-1a1 1 0 1 0 0 2 1 1 0 0 0 0-2m-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0"/>
+                </svg>
 
-  <span id="cart-count"
-        style="
-          position:absolute;
-          top:-5px;
-          right:-10px;
-          background:red;
-          color:white;
-          font-size:12px;
-          padding:2px 6px;
-          border-radius:50%;
-        ">
-    {{ collect(session('cart', []))->sum('qty') }}
-  </span>
-</a>
+                <span id="cart-count"
+                      style="
+                        position:absolute;
+                        top:-5px;
+                        right:-10px;
+                        background:red;
+                        color:white;
+                        font-size:12px;
+                        padding:2px 6px;
+                        border-radius:50%;
+                      ">
+                  {{ collect(session('cart', []))->sum('qty') }}
+                </span>
+              </a>
             </div>
           </div>
       </div>
