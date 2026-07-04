@@ -21,8 +21,8 @@
           </a>
 
           <!-- Tombol Cart khusus mobile agar selalu tampil di sebelah tombol hamburger -->
-          <div class="user_option d-flex d-lg-none" style="position: absolute; right: 65px; top: 50%; transform: translateY(-50%); z-index: 200000; margin-top: 0;">
-            <a class="cart_link" href="/cart" style="position: relative; color: #111;">
+          <div class="mobile_cart_container d-flex d-lg-none" style="position: absolute; right: 65px; top: 50%; transform: translateY(-50%); z-index: 200000;">
+            <a class="cart_link" href="/cart" style="position: relative; transition: color 0.3s;">
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-cart2" viewBox="0 0 16 16">
                 <path d="M0 2.5A.5.5 0 0 1 .5 2H2a.5.5 0 0 1 .485.379L2.89 4H14.5a.5.5 0 0 1 .485.621l-1.5 6A.5.5 0 0 1 13 11H4a.5.5 0 0 1-.485-.379L1.61 3H.5a.5.5 0 0 1-.5-.5M3.14 5l1.25 5h8.22l1.25-5zM5 13a1 1 0 1 0 0 2 1 1 0 0 0 0-2m-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0m9-1a1 1 0 1 0 0 2 1 1 0 0 0 0-2m-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0"/>
               </svg>
@@ -33,7 +33,7 @@
           </div>
 
           <button class="navbar-toggler" type="button" id="navbar-toggler" aria-label="Toggle navigation" aria-expanded="false" aria-controls="navbarSupportedContent">
-            <span class="navbar-toggler-icon">&#9776;</span>
+            <span class="navbar-toggler-icon"></span>
           </button>
 
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
@@ -104,8 +104,6 @@
                   // ensure backdrop sits under the menu
                   backdrop.style.zIndex = '10001';
                   document.body.style.overflow = 'hidden';
-                  // change toggler to X
-                  btn.querySelector('.navbar-toggler-icon').innerHTML = '&times;';
                 }
 
                 function closeMenu(){
@@ -116,8 +114,6 @@
                   backdrop.classList.remove('show');
                   backdrop.style.zIndex = '';
                   document.body.style.overflow = '';
-                  // change toggler back to hamburger
-                  btn.querySelector('.navbar-toggler-icon').innerHTML = '&#9776;';
                 }
 
                 if(btn && collapse){

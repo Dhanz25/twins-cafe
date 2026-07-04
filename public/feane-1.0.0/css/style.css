@@ -160,12 +160,23 @@ a:focus {
 }
 .header_section.scrolled .nav-link,
 .header_section.scrolled .navbar-brand span,
-.header_section.scrolled .user_option a {
+.header_section.scrolled .user_option a,
+.header_section.scrolled .mobile_cart_container a {
   color: #000;
 }
 
 .header_section.scrolled .cart_link svg {
   fill: #000;
+}
+
+.header_section:not(.scrolled) .mobile_cart_container a {
+  color: #ffffff;
+}
+
+.header_section.scrolled .navbar-toggler span,
+.header_section.scrolled .navbar-toggler span::before,
+.header_section.scrolled .navbar-toggler span::after {
+  background-color: #000000;
 }
 
 /* ================= BRAND ================= */
