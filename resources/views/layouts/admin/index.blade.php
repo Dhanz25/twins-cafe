@@ -258,5 +258,18 @@
 <script src="{{ asset('AdminLTE-master/dist/js/demo.js') }}"></script>
 <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
 <script src="{{ asset('AdminLTE-master/dist/js/pages/dashboard.js') }}"></script>
+<script>
+  // Fallback: force-hide the preloader in case AdminLTE JS fails to load/run
+  (function(){
+    function hidePreloader(){
+      var p = document.querySelector('.preloader');
+      if(p){ p.style.display = 'none'; p.style.height = '0'; p.style.overflow = 'hidden'; }
+    }
+    // hide on window load
+    window.addEventListener('load', function(){ setTimeout(hidePreloader, 300); });
+    // safety net: hide after 2 seconds no matter what
+    setTimeout(hidePreloader, 2000);
+  })();
+</script>
 </body>
 </html>
