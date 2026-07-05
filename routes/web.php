@@ -4,6 +4,7 @@
 use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProdukController;
+use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
 use App\Models\Transaksi;
@@ -64,6 +65,12 @@ Route::middleware('auth')->prefix('admin')->group(function () {
     Route::get('/produk/{id}/edit', [ProdukController::class, 'edit'])->name('admin.produk.edit');
     Route::put('/produk/{id}', [ProdukController::class, 'update'])->name('admin.produk.update');
     Route::delete('/produk/{id}', [ProdukController::class, 'destroy'])->name('admin.produk.destroy');
+
+    // kategori
+    Route::get('/kategori', [KategoriController::class, 'index'])->name('admin.kategori');
+    Route::post('/kategori', [KategoriController::class, 'store'])->name('admin.kategori.store');
+    Route::put('/kategori/{id}', [KategoriController::class, 'update'])->name('admin.kategori.update');
+    Route::delete('/kategori/{id}', [KategoriController::class, 'destroy'])->name('admin.kategori.destroy');
 
     // transaksi
     Route::get('/transaksi', function () {
