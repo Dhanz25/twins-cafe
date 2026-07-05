@@ -50,6 +50,19 @@
       .menu-search { max-width: 100%; }
       .menu-search .form-control, .menu-search .input-group-append .btn { height: 44px; }
     }
+    
+    /* Fix product images in public page */
+    .food_section .box .img-box {
+      padding: 0 !important;
+      overflow: hidden;
+    }
+    .food_section .box .img-box img {
+      max-width: 100% !important;
+      max-height: 100% !important;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
   </style>
 
 </head>
