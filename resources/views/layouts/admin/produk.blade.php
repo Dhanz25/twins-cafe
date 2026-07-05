@@ -21,25 +21,18 @@
     }
     /* make image area a fixed box, center and crop image inside */
     .product-card .product-image {
-      height: 220px; /* smaller visible image area */
+      height: 200px;
+      width: 100%;
       overflow: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background-color: #fff;
-      border-bottom: 1px solid rgba(0,0,0,0.05);
-      padding: 6px;
     }
     .product-card .product-image img {
-      max-height: 100%;
-      max-width: 90%;
-      object-fit: contain;
-      display: block;
-      margin: 0 auto;
-      border-radius: 4px;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
     }
     .product-card .card-body {
       flex: 1 1 auto;
+      padding: 15px;
     }
     .product-card .card-footer {
       background: transparent;
