@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class TransaksiDetail extends Model
 {
     // migration creates table `detail_transaksi`
-    protected $table = 'transaksi_detail';
+    protected $table = 'detail_transaksi';
 
     // primary key column in migration is `id_detail`
     protected $primaryKey = 'id_detail';

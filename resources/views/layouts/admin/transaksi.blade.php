@@ -162,12 +162,23 @@
     <!-- Main content -->
     <section class="content">
       <div class="container-fluid">
+
+        @if(session('success'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+          <i class="fas fa-check-circle mr-1"></i> {{ session('success') }}
+          <button type="button" class="close" data-dismiss="alert"><span>&times;</span></button>
+        </div>
+        @endif
+
         <!-- /.row -->
         <div class="row">
           <div class="col-12">
             <div class="card">
               <div class="card-header">
                 <h3 class="card-title">Data Transaksi</h3>
+                <div class="card-tools">
+                  <span class="badge badge-info">Total: {{ $transaksis->count() }}</span>
+                </div>
               </div>
               <!-- /.card-header -->
               <div class="card-body table-responsive p-0">
@@ -175,10 +186,10 @@
                   <thead>
                     <tr>
                       <th>ID</th>
-                      <th>Session ID</th>
                       <th>No Meja</th>
                       <th>Total</th>
                       <th>Status</th>
+                      <th>Tanggal</th>
                       <th>Aksi</th>
                     </tr>
                   </thead>
@@ -186,17 +197,62 @@
                     @forelse($transaksis as $t)
                     <tr>
                       <td>{{ $t->id_transaksi }}</td>
-                      <td>{{ $t->session_id ?? '-' }}</td>
                       <td>{{ $t->no_meja }}</td>
                       <td>Rp {{ number_format($t->total ?? 0,0,',','.') }}</td>
-                      <td>{{ $t->status ?? '-' }}</td>
                       <td>
-                        <a href="#" class="btn btn-sm btn-primary btn-detil" data-id="{{ $t->id_transaksi }}">Detail</a>
+                        @php
+                          $statusClass = match($t->status) {
+                            'selesai' => 'badge-success',
+                            'dibatalkan' => 'badge-danger',
+                            default => 'badge-warning',
+                          };
+                        @endphp
+                        <span class="badge {{ $statusClass }}">{{ ucfirst($t->status ?? 'checkout') }}</span>
+                      </td>
+                      <td>{{ optional($t->created_at)->format('d/m/Y H:i') ?? '-' }}</td>
+                      <td>
+                        <a href="#" class="btn btn-sm btn-primary btn-detil" data-id="{{ $t->id_transaksi }}">
+                          <i class="fas fa-eye"></i> Detail
+                        </a>
+                        <div class="btn-group">
+                          <button type="button" class="btn btn-sm btn-secondary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-exchange-alt"></i> Ubah Status
+                          </button>
+                          <div class="dropdown-menu">
+                            <form action="{{ route('admin.transaksi.updateStatus', $t->id_transaksi) }}" method="POST" class="d-inline">
+                              @csrf
+                              @method('PATCH')
+                              <input type="hidden" name="status" value="checkout">
+                              <button type="submit" class="dropdown-item {{ $t->status == 'checkout' ? 'active' : '' }}">
+                                <i class="fas fa-clock text-warning"></i> Checkout
+                              </button>
+                            </form>
+                            <form action="{{ route('admin.transaksi.updateStatus', $t->id_transaksi) }}" method="POST" class="d-inline">
+                              @csrf
+                              @method('PATCH')
+                              <input type="hidden" name="status" value="selesai">
+                              <button type="submit" class="dropdown-item {{ $t->status == 'selesai' ? 'active' : '' }}">
+                                <i class="fas fa-check-circle text-success"></i> Selesai
+                              </button>
+                            </form>
+                            <form action="{{ route('admin.transaksi.updateStatus', $t->id_transaksi) }}" method="POST" class="d-inline">
+                              @csrf
+                              @method('PATCH')
+                              <input type="hidden" name="status" value="dibatalkan">
+                              <button type="submit" class="dropdown-item {{ $t->status == 'dibatalkan' ? 'active' : '' }}">
+                                <i class="fas fa-times-circle text-danger"></i> Dibatalkan
+                              </button>
+                            </form>
+                          </div>
+                        </div>
                       </td>
                     </tr>
                     @empty
                     <tr>
-                      <td colspan="6" class="text-center">Belum ada transaksi.</td>
+                      <td colspan="6" class="text-center text-muted py-4">
+                        <i class="fas fa-inbox fa-2x mb-2 d-block"></i>
+                        Belum ada transaksi.
+                      </td>
                     </tr>
                     @endforelse
                   </tbody>

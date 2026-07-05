@@ -90,4 +90,11 @@ Route::middleware('auth')->prefix('admin')->group(function () {
 
         return view('layouts.admin.transaksi_invoice', compact('transaksi'));
     })->name('admin.transaksi.show');
+
+    Route::patch('/transaksi/{id}/status', function ($id, \Illuminate\Http\Request $request) {
+        $request->validate(['status' => 'required|in:checkout,selesai,dibatalkan']);
+        $transaksi = Transaksi::findOrFail($id);
+        $transaksi->update(['status' => $request->status]);
+        return redirect()->route('admin.transaksi')->with('success', 'Status transaksi #' . $id . ' berhasil diubah menjadi "' . $request->status . '".');
+    })->name('admin.transaksi.updateStatus');
 });

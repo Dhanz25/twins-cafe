@@ -22,10 +22,10 @@ class AuthController extends Controller
 
         $user = Auth::user();
 
-        if ($user->email !== 'admin@gmail.com') {
+        if ($user->level !== 'admin') {
             Auth::logout();
             return back()->withErrors([
-                'email' => 'Bukan admin'
+                'email' => 'Akun Anda bukan admin. Silakan hubungi administrator.'
             ]);
         }
 

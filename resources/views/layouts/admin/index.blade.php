@@ -105,7 +105,7 @@
           <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
           <li class="nav-item menu-open">
-            <a href="#" class="nav-link active">
+            <a href="{{ route('admin.index') }}" class="nav-link active">
               <i class="nav-icon fas fa-tachometer-alt"></i>
               <p>
                 Dashboard
@@ -179,33 +179,40 @@
       <div class="container-fluid">
         <!-- Small boxes (Stat box) -->
         <div class="row">
-          <div class="col-lg-6 col-14">
-            <!-- small box -->
+          <div class="col-lg-4 col-sm-6 col-12">
             <div class="small-box bg-info">
               <div class="inner">
                 <h3>{{ \App\Models\Transaksi::count() }}</h3>
-
                 <p>Transaksi</p>
               </div>
               <div class="icon">
-                <i class="ion ion-bag"></i>
+                <i class="fas fa-shopping-cart"></i>
               </div>
-              <a href="{{ route ('admin.transaksi')}}" class="small-box-footer">Selengkapnya <i class="fas fa-arrow-circle-right"></i></a>
+              <a href="{{ route('admin.transaksi') }}" class="small-box-footer">Selengkapnya <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
-          <!-- ./col -->
-          <div class="col-lg-6 col-14">
-            <!-- small box -->
+          <div class="col-lg-4 col-sm-6 col-12">
+            <div class="small-box bg-success">
+              <div class="inner">
+                <h3>{{ \App\Models\Kategori::count() }}</h3>
+                <p>Kategori</p>
+              </div>
+              <div class="icon">
+                <i class="fas fa-tags"></i>
+              </div>
+              <a href="{{ route('admin.kategori') }}" class="small-box-footer">Selengkapnya <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
+          <div class="col-lg-4 col-sm-6 col-12">
             <div class="small-box bg-warning">
               <div class="inner">
                 <h3>{{ \App\Models\Produk::count() }}</h3>
-
                 <p>Produk</p>
               </div>
               <div class="icon">
-                <i class="ion ion-bag"></i>
+                <i class="fas fa-coffee"></i>
               </div>
-              <a href="{{ route ('admin.produk')}}" class="small-box-footer">Selengkapnya <i class="fas fa-arrow-circle-right"></i></a>
+              <a href="{{ route('admin.produk') }}" class="small-box-footer">Selengkapnya <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
         </div>
