@@ -63,6 +63,7 @@
       max-width: 100% !important;
       max-height: 100% !important;
       object-fit: contain;
+      mix-blend-mode: multiply;
     }
   </style>
 
