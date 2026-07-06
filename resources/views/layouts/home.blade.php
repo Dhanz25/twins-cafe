@@ -53,15 +53,16 @@
     
     /* Fix product images in public page */
     .food_section .box .img-box {
-      padding: 0 !important;
+      padding: 15px !important;
       overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
     .food_section .box .img-box img {
       max-width: 100% !important;
       max-height: 100% !important;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
+      object-fit: contain;
     }
   </style>
 
