@@ -24,11 +24,16 @@
       height: 200px;
       width: 100%;
       overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 15px;
     }
     .product-card .product-image img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      mix-blend-mode: multiply;
     }
     .product-card .card-body {
       flex: 1 1 auto;
