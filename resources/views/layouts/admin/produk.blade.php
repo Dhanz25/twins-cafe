@@ -255,11 +255,8 @@
                   @forelse($produks as $p)
                   <div class="col-sm-6 col-md-4 col-lg-3 mb-4">
                     <div class="card product-card">
-                      @php
-                        $imgUrl = $p->image ? asset('images/' . $p->image) : 'https://via.placeholder.com/600x400?text=No+Image';
-                      @endphp
                       <div class="product-image">
-                        <img src="{{ $imgUrl }}" alt="{{ $p->nama_produk }}">
+                        <img src="{{ $p->image_url }}" alt="{{ $p->nama_produk }}">
                       </div>
                       <div class="card-body">
                         <h5 class="card-title">{{ $p->nama_produk }}</h5>
@@ -277,7 +274,7 @@
                           data-harga="{{ $p->harga }}"
                           data-stok="{{ $p->stok }}"
                           data-kategori="{{ $p->id_kategori }}"
-                          data-image="{{ $p->image }}"
+                          data-imageurl="{{ $p->image_url }}"
                         >Edit</button>
                         <form action="#" method="POST" class="d-inline form-delete" data-id="{{ $p->id_produk }}" data-name="{{ $p->nama_produk }}">
                           @csrf
@@ -479,7 +476,7 @@ document.addEventListener('DOMContentLoaded', function () {
       var harga = this.dataset.harga;
       var stok = this.dataset.stok;
       var kategori = this.dataset.kategori;
-      var image = this.dataset.image;
+      var imageurl = this.dataset.imageurl;
 
       // set form action (use URL helper base to avoid path issues)
       var form = document.getElementById('formEdit');
@@ -495,13 +492,9 @@ document.addEventListener('DOMContentLoaded', function () {
       } else {
         document.getElementById('edit_kategori').value = '';
       }
-      var imagesBase = "{{ asset('images') }}";
+      
       var preview = document.getElementById('edit_preview');
-      if(image){
-        preview.src = imagesBase + '/' + image;
-      } else {
-        preview.src = 'https://via.placeholder.com/300x180?text=No+Image';
-      }
+      preview.src = imageurl;
 
       // clear file input
       var fileInput = document.getElementById('edit_image');

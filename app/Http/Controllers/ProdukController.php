@@ -56,7 +56,7 @@ class ProdukController extends Controller
         if ($request->hasFile('image')) {
             $file = $request->file('image');
             $filename = time() . '_' . preg_replace('/[^A-Za-z0-9_.-]/', '_', $file->getClientOriginalName());
-            $dest = public_path('images');
+            $dest = public_path('uploads');
             if (!file_exists($dest)) {
                 mkdir($dest, 0755, true);
             }
@@ -103,19 +103,22 @@ class ProdukController extends Controller
             'image' => 'nullable|image|max:2048',
         ]);
 
-        // handle image upload (store in public/images so asset('images/...') works)
+        // handle image upload (store in public/uploads so asset('uploads/...') works)
         if ($request->hasFile('image')) {
             $file = $request->file('image');
             $filename = time() . '_' . preg_replace('/[^A-Za-z0-9_.-]/', '_', $file->getClientOriginalName());
-            $dest = public_path('images');
+            $dest = public_path('uploads');
             if (!file_exists($dest)) {
                 mkdir($dest, 0755, true);
             }
             // delete old image if exists
             if ($p->image) {
-                $oldPath = public_path('images/' . $p->image);
-                if (file_exists($oldPath) && is_file($oldPath)) {
-                    @unlink($oldPath);
+                $oldPathUploads = public_path('uploads/' . $p->image);
+                $oldPathImages = public_path('images/' . $p->image);
+                if (file_exists($oldPathUploads) && is_file($oldPathUploads)) {
+                    @unlink($oldPathUploads);
+                } elseif (file_exists($oldPathImages) && is_file($oldPathImages)) {
+                    @unlink($oldPathImages);
                 }
             }
             $file->move($dest, $filename);
@@ -139,11 +142,14 @@ class ProdukController extends Controller
     {
         $p = Produk::findOrFail($id);
 
-        // delete image file if exists in public/images
+        // delete image file if exists
         if ($p->image) {
-            $path = public_path('images/' . $p->image);
-            if (file_exists($path) && is_file($path)) {
-                @unlink($path);
+            $pathUploads = public_path('uploads/' . $p->image);
+            $pathImages = public_path('images/' . $p->image);
+            if (file_exists($pathUploads) && is_file($pathUploads)) {
+                @unlink($pathUploads);
+            } elseif (file_exists($pathImages) && is_file($pathImages)) {
+                @unlink($pathImages);
             }
         }
 

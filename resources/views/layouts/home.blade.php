@@ -325,12 +325,12 @@ Lebih dari sekadar tempat ngopi, Twins Coffee adalah ruang berkumpul, berbagi ce
           data-id="{{ $produk->getKey() }}"
           data-name="{{ $produk->nama_produk }}"
           data-price="{{ $produk->harga }}"
-          data-image="{{ asset('images/' . $produk->image) }}">
+          data-image="{{ $produk->image_url }}">
             <div class="box">
 
                 <div class="img-box">
                     <img
-                        src="{{ asset('images/' . $produk->image) }}"
+                        src="{{ $produk->image_url }}"
                         alt="{{ $produk->nama_produk }}">
                 </div>
 
